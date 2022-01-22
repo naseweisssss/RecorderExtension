@@ -4,10 +4,9 @@ let startRecordingBtn = document.getElementById("startRecordingBtn");
 let endRecordingBtn = document.getElementById("endRecordingBtn");
 let saveRecordingBtn = document.getElementById("saveRecordingBtn");
 
-// Initialize state
-let isRecording = false;
-console.log("isRecording: " + isRecording);
-const buttonArray = []; // tag key value pairs for url
+// initial state
+chrome.storage.local.set({isRecording: false}, function(){});
+chrome.storage.local.set({btnArray : [4,5,6]}, function(){})
 
 // ============================================
 chrome.storage.sync.get("color", ({ color }) => {
@@ -32,6 +31,7 @@ function setPageBackgroundColor() {
 }
 // ============================================
 
+
 startRecordingBtn.addEventListener("click", async() => {
 	let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 	chrome.scripting.executeScript({
@@ -43,10 +43,15 @@ startRecordingBtn.addEventListener("click", async() => {
 function startRecording () {
 	console.log("starting recording")
 	document.body.addEventListener("click", function (evt) {
-		console.dir(this);
+		// console.dir(this);
+		// const buttonArray = [123];
 		//note evt.target can be a nested element, not the body element, resulting in misfires
-		console.log(evt.target);
-		buttonArray.push(evt.target);
-		alert("body clicked");
-	});	
+		// console.log(evt.target);
+		chrome.storage.local.get(['btnArray'], function (result) {
+			result.btnArray.push(evt.target);
+			// alert("body clicked");
+			console.log(result.btnArray);
+			chrome.storage.local.set({btnArray: result.btnArray}, function(){});
+		});
+	});
 }
