@@ -1,8 +1,6 @@
-// Initialize buttons
-let startRecordingBtn = document.getElementById("startRecordingBtn");
-let endRecordingBtn = document.getElementById("endRecordingBtn");
-let saveRecordingBtn = document.getElementById("saveRecordingBtn");
+let color = '#3aa757';
 
-// chrome.storage.sync.get("color", ({ color }) => {
-//   changeColor.style.backgroundColor = color;
-// });
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.storage.sync.set({ color });
+  console.log('Default background color set to %cgreen', `color: ${color}`);
+});
