@@ -1,4 +1,6 @@
 # RecorderExtension
+
+Orange Modern Minimalist Music Record Logo.png
 ## Inspiration
 With the fast development of technology, the application of websites becomes an essential part of our daily life. For technology novices, there might be barriers to quick start-up and fully enjoying the functions on the website. For instance, when operations, such as ordering LFT test and booking movie tickets, are mostly online, it would cause a technical barrier to elderly who are not familiar with computer operation. It would be great to have an extension to easily record the visualise instruction while demoing the website and generate the QR code/link to send off for potential users.
 
