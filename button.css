@@ -1,6 +1,6 @@
 button {
     height: 30px;
-    width: 100px;
+    width: 120px;
     outline: none;
     margin: 10px;
     border: none;
@@ -10,4 +10,21 @@ button {
   button.current {
     box-shadow: 0 0 0 2px white,
                 0 0 0 4px black;
+  }
+
+  button#startRecordingBtn {
+    background-color: green;
+  }
+
+  button#startRecordingBtn:hover, button#endRecordingBtn:hover, button#saveRecordingBtn:hover {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+
+  button#endRecordingBtn {
+    background-color: red;
+  }
+
+  button#saveRecordingBtn {
+    background-color: orange;
   }
