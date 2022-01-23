@@ -137,12 +137,15 @@ function saveRecording(){
 				pom.click();
 			}
 		}
-		download('outfile.txt', JSON.stringify(result.btnArray));
+		console.log('final array before saving: ')
+		console.log(result.btnArray);
+		download('outfile.txt', result.btnArray);
 	})
 
 }
 
 //supposed to status on extension popup
+//todo
 function updateRecordingStatus(stopRecording){
 	//modify text content of the div id=recordingStatus 
 	let statusDiv = document.getElementById("recordingStatus");
