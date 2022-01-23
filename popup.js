@@ -35,26 +35,24 @@ chrome.storage.local.set({currentURL: ""}, function(){});
 // ============================================
 
 //when demonstrator presses start recording button
+//todo - isRecording is never set to true
 startRecordingBtn.addEventListener("click", async() => {
-	chrome.storage.local.get(['isRecording'], function(result){
-		if(!result.isRecording){
-			console.log("not recording yet.")
-			//start recording
-			let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-			//reset button array
-			chrome.storage.local.set({btnArray : []}, function(){});
-			chrome.scripting.executeScript({
-				target: { tabId: tab.id },
-				function: recordOneStep,
-				args: [tab.url],
-			});
-		} else {
-			console.log("already recording")
-		}
-	})
+	//start recording
+	let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+	
+	chrome.storage.local.set({isRecording: true}, function(){});
+	//reset button array
+	chrome.storage.local.set({btnArray : []}, function(){});
+	
+	chrome.scripting.executeScript({
+		target: { tabId: tab.id },
+		function: recordOneStep,
+		args: [tab.url],
+	});
 });
 
 //when demonstrator navigates to a different page
+//this function is not working
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	// if (request.action == 'record_next_step') {
 	// 	alert("Record next step!");
@@ -64,6 +62,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 })
 
 //when demonstrator presses end recording button
+//todo - isRecording is never set to true
 endRecordingBtn.addEventListener("click", async() => {
 	let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 	console.log("ending recording");
@@ -92,6 +91,7 @@ function recordOneStep(taburl) {
 
 	chrome.storage.local.set({currentURL: taburl});
 
+	//store the inner html of the button
 	document.body.addEventListener("click", function (evt) {
 		let btnSpecifier = evt.target.innerHTML;
 
@@ -103,24 +103,11 @@ function recordOneStep(taburl) {
 	});
 }
 
-function download(filename, text) {
-    var pom = document.createElement('a');
-    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    pom.setAttribute('download', filename);
-
-    if (document.createEvent) {
-        var event = document.createEvent('MouseEvents');
-        event.initEvent('click', true, true);
-        pom.dispatchEvent(event);
-    }
-    else {
-        pom.click();
-    }
-}
-
+//todo - isRecording is never set to true
 function endRecording(){
 
 	chrome.storage.local.get(['isRecording'], function (result){
+		console.log(result);
 		if (result.isRecording){
 			chrome.storage.local.set({isRecording: false}, function(){updateRecordingStatus(result.isRecording)})
 		} else {
@@ -129,19 +116,35 @@ function endRecording(){
 	})
 }
 
+//todo - not working. always saves empty list
 function saveRecording(){
 
 	//write btnArray to a file - local file for now 
 	console.log("ending recording. saving navigation history");
 
 	chrome.storage.local.get(['btnArray'], function(result){
+
+		let download = function(filename, text) {
+			var pom = document.createElement('a');
+			pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+			pom.setAttribute('download', filename);
+		
+			if (document.createEvent) {
+				var event = document.createEvent('MouseEvents');
+				event.initEvent('click', true, true);
+				pom.dispatchEvent(event);
+			} else {
+				pom.click();
+			}
+		}
 		download('outfile.txt', JSON.stringify(result.btnArray));
 	})
 
 }
 
+//supposed to status on extension popup
 function updateRecordingStatus(stopRecording){
-	//change the innerHTML of the div id=recordingStatus 
+	//modify text content of the div id=recordingStatus 
 	let statusDiv = document.getElementById("recordingStatus");
 	if (stopRecording) {
 		statusDiv.style.textContent = 'Recording...';
